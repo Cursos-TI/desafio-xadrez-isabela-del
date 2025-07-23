@@ -1,47 +1,87 @@
+#include <stdio.h>
 
+// Função recursiva para o movimento da Torre (direita)
+void moverTorre(int casas) {
+    if (casas == 0) return;
+    printf("Direita\n");
+    moverTorre(casas - 1);
+}
 
-   #include <stdio.h>
+// Função recursiva para o movimento da Rainha (esquerda)
+void moverRainha(int casas) {
+    if (casas == 0) return;
+    printf("Esquerda\n");
+    moverRainha(casas - 1);
+}
 
-int main() {
-    // Movimento da Torre: 5 casas para a direita (usando for)
-    printf("Movimento da Torre:\n");
-    for(int i = 1; i <= 5; i++) {
-        printf("Direita\n");
-    }
+// Função recursiva combinada com loops aninhados para o Bispo
+void moverBispo(int casas) {
+    if (casas == 0) return;
 
-    // Movimento do Bispo: 5 casas na diagonal para cima e à direita (usando while)
-    printf("\nMovimento do Bispo:\n");
-    int j = 1;
-    while(j <= 5) {
-        printf("Cima Direita\n");
-        j++;
-    }
-
-    // Movimento da Rainha: 8 casas para a esquerda (usando do-while)
-    printf("\nMovimento da Rainha:\n");
-    int k = 1;
-    do {
-        printf("Esquerda\n");
-        k++;
-    } while(k <= 8);
-
-    // Movimento do Cavalo: duas casas para baixo e uma para a esquerda
-    // Utilizando loops aninhados (for + while)
-    printf("\nMovimento do Cavalo:\n");
-
-    // Loop externo com for para as duas casas para baixo
-    for(int i = 0; i < 2; i++) {
-        printf("Baixo\n");
-        
-        // Loop interno (executa apenas 1 vez após o segundo "Baixo")
-        if (i == 1) {
-            int l = 0;
-            while(l < 1) {
-                printf("Esquerda\n");
-                l++;
-            }
+    // Loop externo para o movimento vertical (cima)
+    for (int v = 0; v < 1; v++) {
+        // Loop interno para o movimento horizontal (direita)
+        for (int h = 0; h < 1; h++) {
+            printf("Cima Direita\n");
         }
     }
 
+    moverBispo(casas - 1);
+}
+
+// Movimento do Cavalo (duas casas para cima, uma para a direita)
+// Usando loops aninhados, múltiplas variáveis e controle com break/continue
+void moverCavalo() {
+    printf("Movimento do Cavalo:\n");
+
+    for (int cima = 0; cima < 2; cima++) {
+        if (cima == 1) {
+            int direita = 0;
+            while (direita < 2) {
+                direita++;
+                if (direita == 1) {
+                    printf("Direita\n");
+                    break; // Sai do loop depois de mover 1 casa à direita
+                } else {
+                    continue;
+                }
+            }
+        }
+        printf("Cima\n");
+    }
+}
+
+int main() {
+    // Constantes de movimento
+    int casasTorre = 5;
+    int casasBispo = 5;
+    int casasRainha = 8;
+
+    // Torre
+    printf("Movimento da Torre:\n");
+    moverTorre(casasTorre);
+
+    // Linha em branco
+    printf("\n");
+
+    // Bispo
+    printf("Movimento do Bispo:\n");
+    moverBispo(casasBispo);
+
+    // Linha em branco
+    printf("\n");
+
+    // Rainha
+    printf("Movimento da Rainha:\n");
+    moverRainha(casasRainha);
+
+    // Linha em branco
+    printf("\n");
+
+    // Cavalo
+    moverCavalo();
+
     return 0;
 }
+
+  
