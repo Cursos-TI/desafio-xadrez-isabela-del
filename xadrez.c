@@ -1,87 +1,110 @@
 #include <stdio.h>
 
-// Função recursiva para o movimento da Torre (direita)
-void moverTorre(int casas) {
-    if (casas == 0) return;
-    printf("Direita\n");
-    moverTorre(casas - 1);
-}
-
-// Função recursiva para o movimento da Rainha (esquerda)
-void moverRainha(int casas) {
-    if (casas == 0) return;
-    printf("Esquerda\n");
-    moverRainha(casas - 1);
-}
-
-// Função recursiva combinada com loops aninhados para o Bispo
-void moverBispo(int casas) {
-    if (casas == 0) return;
-
-    // Loop externo para o movimento vertical (cima)
-    for (int v = 0; v < 1; v++) {
-        // Loop interno para o movimento horizontal (direita)
-        for (int h = 0; h < 1; h++) {
-            printf("Cima Direita\n");
-        }
-    }
-
-    moverBispo(casas - 1);
-}
-
-// Movimento do Cavalo (duas casas para cima, uma para a direita)
-// Usando loops aninhados, múltiplas variáveis e controle com break/continue
-void moverCavalo() {
-    printf("Movimento do Cavalo:\n");
-
-    for (int cima = 0; cima < 2; cima++) {
-        if (cima == 1) {
-            int direita = 0;
-            while (direita < 2) {
-                direita++;
-                if (direita == 1) {
-                    printf("Direita\n");
-                    break; // Sai do loop depois de mover 1 casa à direita
-                } else {
-                    continue;
-                }
-            }
-        }
-        printf("Cima\n");
-    }
-}
+#define TAM 10
+#define TAM_NAVIO 3
+#define AGUA 0
+#define NAVIO 3
 
 int main() {
-    // Constantes de movimento
-    int casasTorre = 5;
-    int casasBispo = 5;
-    int casasRainha = 8;
+    // Declaração e inicialização do tabuleiro 10x10 com água
+    int tabuleiro[TAM][TAM];
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
 
-    // Torre
-    printf("Movimento da Torre:\n");
-    moverTorre(casasTorre);
+    // ------------------------------
+    // Coordenadas dos 4 navios (linha, coluna)
+    // Navio 1 - horizontal
+    int linhaH = 2, colunaH = 1;
 
-    // Linha em branco
-    printf("\n");
+    // Navio 2 - vertical
+    int linhaV = 5, colunaV = 4;
 
-    // Bispo
-    printf("Movimento do Bispo:\n");
-    moverBispo(casasBispo);
+    // Navio 3 - diagonal principal (↘)
+    int linhaD1 = 0, colunaD1 = 0;
 
-    // Linha em branco
-    printf("\n");
+    // Navio 4 - diagonal secundária (↙)
+    int linhaD2 = 0, colunaD2 = 9;
 
-    // Rainha
-    printf("Movimento da Rainha:\n");
-    moverRainha(casasRainha);
+    int sobreposicao = 0;
 
-    // Linha em branco
-    printf("\n");
+    // ------------------------------
+    // Validação e posicionamento do navio horizontal
+    if (colunaH + TAM_NAVIO <= TAM) {
+        for (int i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaH][colunaH + i] == NAVIO) sobreposicao = 1;
+        }
+        if (!sobreposicao) {
+            for (int i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaH][colunaH + i] = NAVIO;
+            }
+        }
+    } else {
+        printf("Navio horizontal fora dos limites.\n");
+        return 1;
+    }
 
-    // Cavalo
-    moverCavalo();
+    // ------------------------------
+    // Validação e posicionamento do navio vertical
+    if (!sobreposicao && linhaV + TAM_NAVIO <= TAM) {
+        for (int i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaV + i][colunaV] == NAVIO) sobreposicao = 1;
+        }
+        if (!sobreposicao) {
+            for (int i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaV + i][colunaV] = NAVIO;
+            }
+        }
+    } else {
+        printf("Navio vertical fora dos limites.\n");
+        return 1;
+    }
+
+    // ------------------------------
+    // Validação e posicionamento do navio diagonal principal (↘)
+    if (!sobreposicao && linhaD1 + TAM_NAVIO <= TAM && colunaD1 + TAM_NAVIO <= TAM) {
+        for (int i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaD1 + i][colunaD1 + i] == NAVIO) sobreposicao = 1;
+        }
+        if (!sobreposicao) {
+            for (int i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaD1 + i][colunaD1 + i] = NAVIO;
+            }
+        }
+    } else {
+        printf("Navio diagonal ↘ fora dos limites.\n");
+        return 1;
+    }
+
+    // ------------------------------
+    // Validação e posicionamento do navio diagonal secundária (↙)
+    if (!sobreposicao && linhaD2 + TAM_NAVIO <= TAM && colunaD2 - (TAM_NAVIO - 1) >= 0) {
+        for (int i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaD2 + i][colunaD2 - i] == NAVIO) sobreposicao = 1;
+        }
+        if (!sobreposicao) {
+            for (int i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaD2 + i][colunaD2 - i] = NAVIO;
+            }
+        }
+    } else {
+        printf("Navio diagonal ↙ fora dos limites.\n");
+        return 1;
+    }
+
+    // ------------------------------
+    // Exibição do tabuleiro
+    printf("\nTabuleiro Batalha Naval (0 = água, 3 = navio):\n\n");
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
 
     return 0;
 }
-
+   
   
